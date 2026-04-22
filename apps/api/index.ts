@@ -2,14 +2,33 @@ import { Hono } from "hono";
 import { serve } from "@hono/node-server";
 import { logger } from "hono/logger";
 import { cors } from "hono/cors";
+import { secureHeaders } from "hono/secure-headers";
 import { env } from "./env";
-import { db } from "./db";
-import { schema } from "@repo/db";
+import { auth } from "./auth";
 
 const app = new Hono();
 
+// Global Middleware
 app.use("*", logger());
 app.use("*", cors());
+app.use("*", secureHeaders());
+
+// Error Handling
+app.onError((err, c) => {
+  console.error(`[API Error] ${err.message}`, err.stack);
+  return c.json(
+    {
+      success: false,
+      message: err.message || "Internal Server Error",
+    },
+    500
+  );
+});
+
+// Better Auth Route Handler
+app.on(["POST", "GET"], "/api/auth/*", (c) => {
+  return auth.handler(c.req.raw);
+});
 
 // Runtime.js endpoint
 app.get("/api/runtime.js", (c) => {

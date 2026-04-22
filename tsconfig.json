@@ -1,17 +1,14 @@
 {
+  "extends": "./packages/config/tsconfig.base.json",
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "strict": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
       "@repo/db": ["./packages/db/index.ts"],
+      "@repo/db/schema": ["./packages/db/schema/index.ts"],
       "@repo/shared": ["./packages/shared/index.ts"],
       "@repo/api": ["./apps/api/index.ts"]
     }
   },
+  "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", "dist"]
 }

@@ -1,12 +1,12 @@
-# TypeScript React Hono Template
+# Kaleidoscope: TypeScript React Hono Template
 
-An industry-standard, production-ready full-stack monorepo combining a React 19 frontend with a Hono backend. This template is designed for maximum performance, type safety, and scalability using Turborepo and Bun.
+An industry-standard, production-ready full-stack monorepo combining a **React 19** frontend with a **Hono** backend. This template is architected for maximum performance, end-to-end type safety, and scalability using **Turborepo** and **pnpm**.
 
 ---
 
 ## Architecture
 
-The project follows a monorepo structure managed by pnpm workspaces and orchestrated by Turborepo.
+The project follows a modular monorepo structure managed by **pnpm workspaces** and orchestrated by **Turborepo**.
 
 ```text
 .
@@ -14,42 +14,43 @@ The project follows a monorepo structure managed by pnpm workspaces and orchestr
 │   ├── web/                # React 19 frontend (Vite + TanStack Router)
 │   └── api/                # Hono backend service
 ├── packages/
-│   ├── db/                 # Drizzle ORM schema, client, and migrations
-│   ├── shared/             # Shared Zod schemas and TypeScript models
+│   ├── db/                 # Drizzle ORM schema, client, and Zod models
+│   ├── shared/             # Re-exports and stacks-agnostic utilities
 │   └── config/             # Shared TypeScript and ESLint configurations
 ├── pnpm-workspace.yaml     # Workspace definition
-├── package.json            # Root configuration and scripts
-└── turbo.json              # Build pipeline and task orchestration
+├── package.json            # Workspace-wide dev tools and scripts
+└── turbo.json              # Task orchestration and caching
 ```
 
 ### Core Technologies
-- **Runtime**: Bun (Fast JavaScript runtime)
-- **Frontend**: React 19, Vite, Tailwind CSS v4, TanStack Query & Router
-- **Backend**: Hono (Ultra-fast web framework)
+- **Runtime**: Node.js 22+ (Runtime), pnpm (Package Manager), Bun (CLI Tooling)
+- **Frontend**: React 19, Vite 6, Tailwind CSS v4, TanStack Query & Router
+- **Backend**: Hono v4 (Ultra-fast web framework)
 - **Database**: PostgreSQL with Drizzle ORM
-- **Auth**: Better Auth integration
-- **Monorepo**: Turborepo + pnpm
+- **Auth**: Better Auth (Integrated server & client)
+- **Monorepo**: Turborepo + pnpm Workspaces
 
 ### Key Principles
 - **End-to-End Type Safety**: Shared types between frontend and backend via Hono RPC.
-- **Unified Validation**: Zod schemas defined in `packages/shared` for consistent validation across the stack.
-- **Developer Experience**: Optimized for Windows and Unix environments with robust environment variable injection.
+- **Single Source of Truth**: Zod schemas are derived directly from Drizzle tables in `packages/db`.
+- **Modular Config**: Shared ESLint and TypeScript presets in `packages/config`.
+- **Resilient Architecture**: Singleton database connections, global error handling, and secure headers by default.
 
 ---
 
 ## Getting Started
 
 ### Prerequisites
-- **Bun**: 1.2.x or higher
-- **pnpm**: 10.x or higher (Recommended for workspace stability on Windows)
-- **Node.js**: 22.x or higher
+- **Node.js**: 22.14.0 or higher
+- **pnpm**: 9.0.0 or higher
+- **Bun**: (Optional) Used for fast script execution
 
 ### Installation
 
 1. Clone the repository:
    ```bash
    git clone <repository-url>
-   cd kaleidoscope
+   cd Kaleidoscope
    ```
 
 2. Install dependencies:
@@ -69,29 +70,30 @@ The project follows a monorepo structure managed by pnpm workspaces and orchestr
 ### Start Development Servers
 Run the full-stack environment concurrently:
 ```bash
-bun dev
+pnpm dev
 ```
-- **Frontend**: http://localhost:4000
-- **API**: http://localhost:4001
+- **Frontend**: [http://localhost:4000](http://localhost:4000)
+- **API**: [http://localhost:4001](http://localhost:4001)
 
 ### Database Management
-- **Push Changes**: `bun run db:push`
-- **Drizzle Studio**: `bun run db:studio`
+Manage your database schema from the root:
+- **Push Schema**: `pnpm db:push`
+- **Drizzle Studio**: `pnpm db:studio`
 
-### Available Scripts
-- `bun run dev`: Start all services in watch mode.
-- `bun run build`: Build all applications for production.
-- `pnpm run lint`: Run ESLint across the entire workspace.
-- `pnpm run check`: Run TypeScript type-checking across all packages.
+### Quality Control
+- **Lint**: `pnpm lint`
+- **Typecheck**: `pnpm typecheck`
+- **Format**: `pnpm format`
 
 ---
 
-## Deployment
-
-The template includes a multi-stage `Dockerfile` optimized for monorepos. It utilizes `turbo prune` to ensure lightweight and efficient production images.
+## Security and Reliability
+- **Secure Headers**: Hono `secureHeaders` middleware pre-configured.
+- **Error Boundaries**: Global React Error Boundary catches UI crashes.
+- **Input Validation**: Strict Zod validation on all API boundaries.
+- **Connection Pooling**: Singleton DB client prevents connection leaks.
 
 ---
 
 ## License
-
-This project is licensed under the MIT License.
+MIT
