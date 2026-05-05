@@ -4,23 +4,27 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "start": "bun --env-file=.env apps/api/dist/index.js",
     "dev": "turbo dev",
     "build": "turbo build",
     "lint": "oxlint .",
     "typecheck": "turbo typecheck",
     "test": "turbo test",
-    "format": "oxfmt .",
-    "clean": "git clean -xdf .cache .turbo dist node_modules .tanstack",
+    "format": "oxfmt --write .",
+    "format:check": "oxfmt --check .",
+    "clean": "git clean -xdf .cache .turbo dist node_modules .tanstack coverage apps/*/dist packages/*/dist",
     "db:push": "pnpm --filter=@repo/db push",
     "db:studio": "pnpm --filter=@repo/db studio"
   },
   "devDependencies": {
     "@types/bun": "catalog:",
     "@types/node": "catalog:",
+    "jsdom": "catalog:",
     "oxfmt": "catalog:",
     "oxlint": "catalog:",
     "turbo": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   },
   "engines": {
     "node": ">=22.14.0",

@@ -1,53 +1,40 @@
-# use the official Bun image
-# see all versions at https://hub.docker.com/r/oven/bun/tags
-FROM oven/bun:1.2.15-alpine AS base
+FROM oven/bun:1.3.13-alpine AS base
+
 WORKDIR /app
 
-# install dependencies into temp directory
-# this will cache them and speed up future builds
-FROM base AS install
+RUN apk add --no-cache nodejs npm
+RUN npm install -g pnpm@9.15.4
 
-# Install Alpine packages needed for native dependencies
-RUN apk add --no-cache \
-  python3 \
-  make \
-  g++ \
-  libwebp-dev \
-  libjpeg-turbo-dev \
-  libpng-dev \
-  tiff-dev \
-  giflib-dev \
-  libde265-dev \
-  libheif-dev \
-  expat-dev \
-  glib-dev
+FROM base AS deps
 
-RUN mkdir -p /temp/dev
-COPY package.json /temp/dev/
-RUN cd /temp/dev && bun install
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+COPY apps/api/package.json apps/api/package.json
+COPY apps/web/package.json apps/web/package.json
+COPY packages/config/package.json packages/config/package.json
+COPY packages/db/package.json packages/db/package.json
+COPY packages/shared/package.json packages/shared/package.json
 
-# install with --production (exclude devDependencies)
-RUN mkdir -p /temp/prod
-COPY package.json /temp/prod/
-RUN cd /temp/prod && bun install --production
+RUN pnpm install --frozen-lockfile
 
-# copy node_modules from temp directory
-# then copy all (non-ignored) project files into the image
-FROM base AS build
-COPY --from=install /temp/dev/node_modules node_modules
-COPY . /app
+FROM deps AS build
+
+COPY . .
 ENV NODE_ENV=production
-RUN bun run build
+RUN pnpm build
 
-# copy production dependencies and source code into final image
-FROM base AS release
-COPY --from=install --chown=bun:bun /temp/prod/node_modules /app/node_modules
-COPY --from=build --chown=bun:bun /app/dist /app/dist
-COPY --chown=bun:bun package.json /app/
+FROM oven/bun:1.3.13-alpine AS release
 
-# run the app
+WORKDIR /app
+
+COPY --from=build --chown=bun:bun /app/apps/api/dist ./apps/api/dist
+COPY --from=build --chown=bun:bun /app/apps/web/dist ./apps/web/dist
+COPY --chown=bun:bun package.json ./
+
 USER bun
-EXPOSE 4001/tcp
 ENV NODE_ENV=production
-ENTRYPOINT [ "bun", "dist/index.js" ]
-# CMD ["sleep", "infinity"]
+ENV PORT=4001
+ENV STATIC_ROOT=apps/web/dist
+
+EXPOSE 4001/tcp
+
+CMD ["bun", "apps/api/dist/index.js"]

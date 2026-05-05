@@ -1,3 +1,4 @@
+import { NotFoundPage } from "../features/not-found/not-found";
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 
@@ -17,6 +18,12 @@ export const Route = createRootRoute({
               >
                 Home
               </Link>
+              <a
+                href="/api/scalar"
+                className="text-sm font-medium transition-colors hover:text-primary"
+              >
+                API Docs
+              </a>
             </div>
           </div>
           <div className="hidden sm:block">
@@ -48,13 +55,5 @@ export const Route = createRootRoute({
       </button>
     </div>
   ),
-  notFoundComponent: () => (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-      <h1 className="text-4xl font-bold mb-4">404 - Not Found</h1>
-      <p className="text-muted-foreground mb-8">The page you are looking for does not exist.</p>
-      <Link to="/" className="text-primary hover:underline font-medium">
-        Go back home
-      </Link>
-    </div>
-  ),
+  notFoundComponent: NotFoundPage,
 });

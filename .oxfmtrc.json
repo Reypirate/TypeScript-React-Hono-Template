@@ -1,0 +1,30 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": [
+    "apps/web/src/routeTree.gen.ts",
+    "coverage",
+    "data",
+    "dist",
+    "node_modules",
+    ".tanstack",
+    ".turbo"
+  ],
+  "printWidth": 100,
+  "sortImports": {
+    "customGroups": [
+      {
+        "elementNamePattern": ["^react(-dom)?(/.*)?$", "^react$"],
+        "groupName": "react"
+      },
+      {
+        "elementNamePattern": ["^@repo/", "^@/"],
+        "groupName": "internal"
+      }
+    ],
+    "groups": ["type", "react", "external", "internal", ["parent", "sibling", "index"]]
+  },
+  "sortPackageJson": true,
+  "sortTailwindcss": {
+    "functions": ["cn", "cva"]
+  }
+}

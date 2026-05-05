@@ -4,3 +4,5 @@ dist
 .git
 .env
 .tanstack
+coverage
+data

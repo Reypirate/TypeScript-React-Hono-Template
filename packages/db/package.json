@@ -8,8 +8,10 @@
     "./schema": "./schema/index.ts"
   },
   "scripts": {
-    "push": "drizzle-kit push",
-    "studio": "drizzle-kit studio"
+    "push": "dotenv -e ../../.env -- drizzle-kit push",
+    "studio": "dotenv -e ../../.env -- drizzle-kit studio",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false -p tsconfig.json",
+    "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.2",
@@ -17,6 +19,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "dotenv-cli": "catalog:",
     "drizzle-kit": "^0.31.10"
   }
 }

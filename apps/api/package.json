@@ -5,7 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "dotenv -e ../../.env -- bun run --hot index.ts",
-    "build": "tsx index.ts"
+    "build": "bun build --minify --sourcemap --target=bun --outdir=dist index.ts",
+    "start": "bun --env-file=../../.env dist/index.js",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false -p tsconfig.json",
+    "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
     "@hono/node-server": "^2.0.0",

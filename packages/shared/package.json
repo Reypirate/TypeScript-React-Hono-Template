@@ -6,6 +6,10 @@
   "exports": {
     ".": "./index.ts"
   },
+  "scripts": {
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false -p tsconfig.json",
+    "test": "vitest run --passWithNoTests"
+  },
   "dependencies": {
     "zod": "catalog:"
   }

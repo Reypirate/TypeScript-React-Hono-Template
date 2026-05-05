@@ -1,116 +1,94 @@
-# Kaleidoscope: TypeScript React Hono Template
+# TypeScript React Hono Template
 
-An industry-standard, production-ready full-stack monorepo combining a **React 19** frontend with a **Hono** backend. This template is architected for maximum performance, end-to-end type safety, and scalability using **Turborepo**, **pnpm catalogs**, and **Oxc**.
-
----
+A production-minded full-stack TypeScript monorepo with a React 19 frontend, a Hono API,
+Better Auth, Drizzle/PostgreSQL, runtime client configuration, API docs, CI, and pnpm/Turbo
+workspace orchestration.
 
 ## Architecture
-
-The project follows a modular monorepo structure managed by **pnpm workspaces** and orchestrated by **Turborepo**.
 
 ```text
 .
 ├── apps/
-│   ├── web/                # React 19 frontend (Vite + TanStack Router)
-│   └── api/                # Hono backend service
+│   ├── web/                 # React 19, Vite, TanStack Router, TanStack Query
+│   └── api/                 # Hono API, Better Auth, runtime env, OpenAPI, static serving
 ├── packages/
-│   ├── db/                 # Drizzle ORM schema, client, and Zod models
-│   ├── shared/             # Re-exports and stacks-agnostic utilities
-│   └── config/             # Shared TypeScript and Oxc configurations
-├── pnpm-workspace.yaml     # Workspace definition and dependency catalogs
-├── package.json            # Workspace-wide dev tools and scripts
-└── turbo.json              # Task orchestration and caching
+│   ├── db/                  # Drizzle schema and database client
+│   ├── shared/              # Shared Zod schemas and cross-stack types
+│   └── config/              # Shared TypeScript config
+├── pnpm-workspace.yaml      # Workspaces and dependency catalogs
+├── turbo.json               # Build, test, lint, typecheck orchestration
+└── Dockerfile               # Monorepo build, Bun production server
 ```
-
-### Core Technologies
-
-- **Runtime**: Node.js 22+ (Runtime), pnpm 9.15+ (Package Manager), Bun (CLI Tooling)
-- **Frontend**: React 19, Vite 8, Tailwind CSS v4, TanStack Query & Router
-- **Backend**: Hono v4 (Ultra-fast web framework)
-- **Database**: PostgreSQL with Drizzle ORM
-- **Auth**: Better Auth (Integrated server & client)
-- **Monorepo**: Turborepo + pnpm Workspaces + Catalogs
-- **Quality**: Oxc (oxlint + oxfmt) - 50-100x faster than ESLint/Prettier
-- **Language**: TypeScript 6
-
-### Key Principles
-
-- **End-to-End Type Safety**: Shared types between frontend and backend via Hono RPC.
-- **Single Source of Truth**: Zod schemas are derived directly from Drizzle tables in `packages/db`.
-- **Modular Config**: Shared TypeScript presets in `packages/config`.
-- **Centralized Dependencies**: All shared package versions are managed via **pnpm catalogs** in `pnpm-workspace.yaml`.
-- **High-Performance Linting**: Uses **Oxc** for near-instant linting and formatting.
-- **Resilient Architecture**: Singleton database connections, global error handling, and secure headers by default.
-
----
 
 ## Getting Started
 
-### Prerequisites
+Prerequisites:
 
-- **Node.js**: 22.14.0 or higher
-- **pnpm**: 9.15.4 or higher (Required for catalogs)
-- **Bun**: Used for fast script execution and API runtime
-
-### Installation
-
-1. Clone the repository:
-
-   ```bash
-   git clone <repository-url>
-   cd Kaleidoscope
-   ```
-
-2. Install dependencies:
-
-   ```bash
-   pnpm install
-   ```
-
-3. Configure environment variables:
-   ```bash
-   cp .env.example .env
-   ```
-
----
-
-## Development
-
-### Start Development Servers
-
-Run the full-stack environment concurrently:
+- Node.js 22.14+
+- pnpm 9.15+
+- Bun 1.3+
 
 ```bash
+pnpm install
+cp .env.example .env
 pnpm dev
 ```
 
-- **Frontend**: [http://localhost:4000](http://localhost:4000)
-- **API**: [http://localhost:4001](http://localhost:4001)
+Development servers:
 
-### Database Management
+- Web: http://localhost:4000
+- API: http://localhost:4001
+- API docs: http://localhost:4001/api/scalar
+- Health: http://localhost:4001/api/health
 
-Manage your database schema from the root:
+## Runtime Configuration
 
-- **Push Schema**: `pnpm db:push`
-- **Drizzle Studio**: `pnpm db:studio`
+The API serves `/api/runtime.js`, which exposes only `VITE_*` variables to the browser:
 
-### Quality Control
+```html
+<script type="text/javascript" src="/api/runtime.js"></script>
+```
 
-- **Lint**: `pnpm lint`
-- **Typecheck**: `pnpm typecheck`
-- **Format**: `pnpm format`
+This keeps the frontend container-friendly: build once, then deploy with different runtime
+environment values.
 
----
+## Scripts
 
-## Security and Reliability
+- `pnpm dev` - run all workspace dev servers through Turbo
+- `pnpm build` - build the web app and bundled API
+- `pnpm start` - run the production API bundle, which also serves `apps/web/dist`
+- `pnpm lint` - run oxlint
+- `pnpm format` - write formatting changes with oxfmt
+- `pnpm format:check` - check formatting in CI
+- `pnpm typecheck` - typecheck workspace packages
+- `pnpm test` - run Vitest workspace tests
+- `pnpm db:push` - push Drizzle schema using `.env`
+- `pnpm db:studio` - open Drizzle Studio using `.env`
 
-- **Secure Headers**: Hono `secureHeaders` middleware pre-configured.
-- **Error Boundaries**: Global React Error Boundary catches UI crashes.
-- **Input Validation**: Strict Zod validation on all API boundaries.
-- **Connection Pooling**: Singleton DB client prevents connection leaks.
+## Local Services
 
----
+`docker-compose.yaml` includes PostgreSQL, MailDev, and MinIO. They support the optional
+database, email, and S3-compatible storage settings in `.env.example`.
 
-## License
+## Production
 
-MIT
+```bash
+pnpm build
+pnpm start
+```
+
+The Hono server serves API routes under `/api/*`, Better Auth under `/api/auth/*`, runtime
+client env at `/api/runtime.js`, and the built React app from `apps/web/dist` when
+`NODE_ENV=production`.
+
+Docker:
+
+```bash
+docker build -t react-hono-template .
+docker run --env-file .env -p 4001:4001 react-hono-template
+```
+
+## Quality Gates
+
+CI runs dependency install, gitleaks, format check, lint, typecheck, tests, and build. A
+`lefthook.yml` is included for local pre-commit lint/format hooks.

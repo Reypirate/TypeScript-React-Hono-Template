@@ -5,10 +5,16 @@ export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
-  emailVerified: boolean("emailVerified").notNull(),
+  emailVerified: boolean("emailVerified")
+    .$defaultFn(() => false)
+    .notNull(),
   image: text("image"),
-  createdAt: timestamp("createdAt").notNull(),
-  updatedAt: timestamp("updatedAt").notNull(),
+  createdAt: timestamp("createdAt")
+    .$defaultFn(() => new Date())
+    .notNull(),
+  updatedAt: timestamp("updatedAt")
+    .$defaultFn(() => new Date())
+    .notNull(),
 });
 
 export const session = pgTable("session", {
@@ -21,7 +27,7 @@ export const session = pgTable("session", {
   userAgent: text("userAgent"),
   userId: text("userId")
     .notNull()
-    .references(() => user.id),
+    .references(() => user.id, { onDelete: "cascade" }),
 });
 
 export const account = pgTable("account", {
@@ -30,7 +36,7 @@ export const account = pgTable("account", {
   providerId: text("providerId").notNull(),
   userId: text("userId")
     .notNull()
-    .references(() => user.id),
+    .references(() => user.id, { onDelete: "cascade" }),
   accessToken: text("accessToken"),
   refreshToken: text("refreshToken"),
   idToken: text("idToken"),
@@ -47,6 +53,6 @@ export const verification = pgTable("verification", {
   identifier: text("identifier").notNull(),
   value: text("value").notNull(),
   expiresAt: timestamp("expiresAt").notNull(),
-  createdAt: timestamp("createdAt"),
-  updatedAt: timestamp("updatedAt"),
+  createdAt: timestamp("createdAt").$defaultFn(() => new Date()),
+  updatedAt: timestamp("updatedAt").$defaultFn(() => new Date()),
 });

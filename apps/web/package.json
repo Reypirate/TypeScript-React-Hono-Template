@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "dotenv -e ../../.env -- vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false -p tsconfig.json",
+    "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
