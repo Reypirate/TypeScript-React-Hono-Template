@@ -1,8 +1,9 @@
+import * as schema from "@repo/db/schema";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { openAPI } from "better-auth/plugins";
+
 import { db } from "./db";
-import * as schema from "@repo/db/schema";
 import { env } from "./env";
 import { sendMail } from "./mailer";
 

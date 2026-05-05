@@ -12,9 +12,7 @@ export function formatLatency(milliseconds: number) {
     }).format(milliseconds / 1000)}s`;
   }
 
-  return `${new Intl.NumberFormat("en-US", { maximumFractionDigits: 3 }).format(
-    milliseconds,
-  )}ms`;
+  return `${new Intl.NumberFormat("en-US", { maximumFractionDigits: 3 }).format(milliseconds)}ms`;
 }
 
 export function formatCompactNumber(value: number) {

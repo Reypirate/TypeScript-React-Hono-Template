@@ -1,10 +1,11 @@
-import { auth } from "./auth";
-import { env } from "./env";
-import { cors } from "hono/cors";
 import { Hono } from "hono";
+import { serveStatic } from "hono/bun";
+import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { secureHeaders } from "hono/secure-headers";
-import { serveStatic } from "hono/bun";
+
+import { auth } from "./auth";
+import { env } from "./env";
 
 const app = new Hono();
 

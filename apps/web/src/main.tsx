@@ -1,6 +1,7 @@
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import React from "react";
 import ReactDOM from "react-dom/client";
+
 import { NuqsProvider } from "./providers/nuqs";
 import { ReactQueryProvider } from "./providers/react-query";
 import { routeTree } from "./routeTree.gen";

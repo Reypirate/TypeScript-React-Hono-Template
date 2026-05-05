@@ -22,6 +22,7 @@ export default defineConfig({
   plugins: ["typescript", "react", "import", "jsx-a11y"],
   rules: {
     "import/consistent-type-specifier-style": ["error", "prefer-top-level"],
+    "import/no-unassigned-import": "off",
     "react/exhaustive-deps": "warn",
     "react/react-in-jsx-scope": "off",
     "react/rules-of-hooks": "error",
@@ -30,15 +31,9 @@ export default defineConfig({
       { fixStyle: "separate-type-imports", prefer: "type-imports" },
     ],
     "typescript/no-explicit-any": "warn",
-    "typescript/no-misused-promises": [
-      "error",
-      { checksVoidReturn: { attributes: false } },
-    ],
+    "typescript/no-misused-promises": ["error", { checksVoidReturn: { attributes: false } }],
     "typescript/no-non-null-assertion": "warn",
-    "typescript/no-unused-vars": [
-      "error",
-      { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
-    ],
+    "typescript/no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
   },
   settings: {
     react: {

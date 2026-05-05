@@ -1,4 +1,7 @@
-import { createTransport, type SendMailOptions } from "nodemailer";
+import type { SendMailOptions } from "nodemailer";
+
+import { createTransport } from "nodemailer";
+
 import { env } from "./env";
 
 function getSmtpConfig() {

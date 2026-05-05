@@ -1,4 +1,5 @@
 import type { Dispatch, SetStateAction } from "react";
+
 import { useCallback, useEffect, useState } from "react";
 
 function readStoredValue<T>(key: string, initialValue: T) {
@@ -10,10 +11,7 @@ function readStoredValue<T>(key: string, initialValue: T) {
   return item ? (JSON.parse(item) as T) : initialValue;
 }
 
-export function useLocalStorage<T>(
-  key: string,
-  initialValue: T,
-): [T, Dispatch<SetStateAction<T>>] {
+export function useLocalStorage<T>(key: string, initialValue: T): [T, Dispatch<SetStateAction<T>>] {
   const [storedValue, setStoredValue] = useState(() => readStoredValue(key, initialValue));
 
   useEffect(() => {

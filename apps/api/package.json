@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "exports": {
+    ".": "./index.ts"
+  },
   "scripts": {
     "dev": "dotenv -e ../../.env -- bun run --hot index.ts",
     "build": "bun build --minify --sourcemap --target=bun --outdir=dist index.ts",
