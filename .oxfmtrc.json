@@ -19,10 +19,10 @@
       },
       {
         "elementNamePattern": ["^@repo/", "^@/"],
-        "groupName": "internal"
+        "groupName": "workspace"
       }
     ],
-    "groups": ["type", "react", "external", "internal", ["parent", "sibling", "index"]]
+    "groups": ["type", "react", "external", "workspace", ["parent", "sibling", "index"]]
   },
   "sortPackageJson": true,
   "sortTailwindcss": {

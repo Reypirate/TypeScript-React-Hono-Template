@@ -35,8 +35,8 @@ const session: AuthSession = {
 
 function setup(currentSession: AuthSession | null = null) {
   const auth = {
-    handler: vi.fn(async (_request: Request) => new Response("auth response")),
-    getSession: vi.fn(async (_headers: Headers) => currentSession),
+    handler: vi.fn((_request: Request) => Promise.resolve(new Response("auth response"))),
+    getSession: vi.fn((_headers: Headers) => Promise.resolve(currentSession)),
   };
   return { ...createApp({ env, auth }), auth };
 }
@@ -57,11 +57,13 @@ describe("API", () => {
   it("returns JSON 404s before a frontend fallback can run", async () => {
     const { app } = setup();
     app.get("*", (c) => c.html("frontend"));
-    for (const path of ["/api", "/api/unknown", "/api/assets/missing.js"]) {
-      const response = await app.request(path);
-      expect(response.status).toBe(404);
-      expect(await response.json()).toEqual({ error: "Not Found" });
-    }
+    await Promise.all(
+      ["/api", "/api/unknown", "/api/assets/missing.js"].map(async (path) => {
+        const response = await app.request(path);
+        expect(response.status).toBe(404);
+        expect(await response.json()).toEqual({ error: "Not Found" });
+      }),
+    );
     expect(await (await app.request("/dashboard")).text()).toBe("frontend");
   });
 
@@ -92,7 +94,9 @@ describe("API", () => {
 
   it("does not grant CORS to an unrelated origin", async () => {
     const { app } = setup();
-    const response = await app.request("/api/health", { headers: { Origin: "https://other.test" } });
+    const response = await app.request("/api/health", {
+      headers: { Origin: "https://other.test" },
+    });
     expect(response.headers.get("Access-Control-Allow-Origin")).toBeNull();
   });
 
@@ -109,7 +113,7 @@ describe("API", () => {
     const response = await app.request("/api/me", { headers: { Cookie: "session=example" } });
     expect(response.status).toBe(200);
     const body = await response.json();
-    expect(body.user.id).toBe(user.id);
+    expect(body).toMatchObject({ user: { id: user.id } });
     expect(JSON.stringify(body)).not.toContain(session.session.token);
     expect(auth.getSession.mock.calls[0]?.[0].get("Cookie")).toBe("session=example");
   });
@@ -127,7 +131,9 @@ describe("API", () => {
 
   it("preserves expected HTTP error statuses", async () => {
     const { app } = setup();
-    app.get("/forbidden", () => { throw new HTTPException(403, { message: "Forbidden" }); });
+    app.get("/forbidden", () => {
+      throw new HTTPException(403, { message: "Forbidden" });
+    });
     const response = await app.request("/forbidden");
     expect(response.status).toBe(403);
     expect(await response.json()).toEqual({ error: "Forbidden" });
@@ -138,7 +144,10 @@ describe("API", () => {
     app.get("/invalid", (c) => c.json(z.object({ name: z.string() }).parse({ name: 42 })));
     const response = await app.request("/invalid");
     expect(response.status).toBe(400);
-    expect(await response.json()).toMatchObject({ error: "Validation failed", details: [{ path: ["name"] }] });
+    expect(await response.json()).toMatchObject({
+      error: "Validation failed",
+      details: [{ path: ["name"] }],
+    });
   });
 
   it("keeps internal error details on the server", async () => {
@@ -148,8 +157,28 @@ describe("API", () => {
     const response = await app.request("/api/me");
     expect(response.status).toBe(500);
     const body = await response.json();
-    expect(body).toEqual({ error: "Internal Server Error", requestId: response.headers.get("X-Request-Id") });
+    expect(body).toEqual({
+      error: "Internal Server Error",
+      requestId: response.headers.get("X-Request-Id"),
+    });
     expect(JSON.stringify(body)).not.toContain("secret");
     expect(log).toHaveBeenCalledOnce();
+  });
+
+  it("logs a request ID and route pattern without auth tokens or query values", async () => {
+    const { app } = setup();
+    const log = vi.spyOn(console, "info").mockImplementation(() => {});
+    const response = await app.request(
+      "/api/auth/reset-password/private-path-token?token=private-query-token",
+    );
+    expect(log).toHaveBeenCalledOnce();
+    const entry = JSON.parse(String(log.mock.calls[0]?.[0]));
+    expect(entry).toMatchObject({
+      requestId: response.headers.get("X-Request-Id"),
+      route: "/api/auth/*",
+      status: 200,
+    });
+    expect(JSON.stringify(entry)).not.toContain("private-path-token");
+    expect(JSON.stringify(entry)).not.toContain("private-query-token");
   });
 });

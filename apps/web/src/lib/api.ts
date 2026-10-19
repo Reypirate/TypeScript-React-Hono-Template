@@ -1,4 +1,4 @@
-import type { ApiRoutes } from "@repo/api";
+import type { ApiRoutes } from "@repo/api/types";
 
 import { hc } from "hono/client";
 

@@ -8,7 +8,7 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit --emitDeclarationOnly false -p tsconfig.json",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run"
   },
   "dependencies": {
     "zod": "catalog:"
