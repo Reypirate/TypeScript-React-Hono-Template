@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.1](https://github.com/Reypirate/TypeScript-React-Hono-Template/compare/v0.1.0...v0.1.1) (2026-10-19)
+
+
+### Bug Fixes
+
+* supply database config for offline CI migration checks ([23033d8](https://github.com/Reypirate/TypeScript-React-Hono-Template/commit/23033d8c5f114268c9daaca62b4d88da8c29256b))
+
+## Changelog
+
 ## Unreleased
 
 ### Added
