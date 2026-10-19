@@ -4,23 +4,23 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./index.ts"
+    ".": "./index.ts",
+    "./types": "./app.ts"
   },
   "scripts": {
     "dev": "dotenv -e ../../.env -- bun run --hot index.ts",
     "build": "bun build --minify --sourcemap --target=bun --outdir=dist index.ts",
-    "start": "bun --env-file=../../.env dist/index.js",
+    "start": "bun --env-file=../../.env ../../scripts/start.mjs",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false -p tsconfig.json",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run"
   },
   "dependencies": {
-    "@hono/node-server": "^2.0.1",
     "@repo/db": "workspace:*",
     "@repo/shared": "workspace:*",
     "@t3-oss/env-core": "^0.13.11",
     "better-auth": "catalog:",
     "hono": "catalog:",
-    "nodemailer": "^8.0.5",
+    "nodemailer": "^10.1.7",
     "zod": "catalog:"
   },
   "devDependencies": {

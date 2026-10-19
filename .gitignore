@@ -30,3 +30,8 @@ pnpm-debug.log*
 # Data
 data/
 storage/
+
+# Test artifacts
+coverage/
+playwright-report/
+test-results/

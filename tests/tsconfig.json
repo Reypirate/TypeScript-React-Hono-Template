@@ -4,5 +4,10 @@
     "types": ["bun"],
     "noEmit": true
   },
-  "include": ["integration/**/*.ts"]
+  "include": [
+    "integration/**/*.ts",
+    "e2e/**/*.ts",
+    "../playwright.config.ts",
+    "../apps/web/src/vite-env.d.ts"
+  ]
 }

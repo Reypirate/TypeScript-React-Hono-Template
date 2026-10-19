@@ -6,7 +6,11 @@ export default defineConfig({
       enabled: false,
     },
     environment: "node",
-    environmentMatchGlobs: [["**/apps/web/**/*.test.{ts,tsx}", "jsdom"]],
-    exclude: [...configDefaults.exclude, "**/tests/integration/**"],
+    exclude: [
+      ...configDefaults.exclude,
+      "**/dist/**",
+      "**/tests/integration/**",
+      "**/tests/e2e/**",
+    ],
   },
 });
