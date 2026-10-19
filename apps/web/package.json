@@ -68,16 +68,16 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.2.4",
-    "@tanstack/react-query-devtools": "^5.100.1",
-    "@tanstack/router-devtools": "^1.166.13",
-    "@tanstack/router-plugin": "^1.167.23",
+    "@tailwindcss/vite": "^4.3.3",
+    "@tanstack/react-query-devtools": "^5.104.3",
+    "@tanstack/router-devtools": "^1.167.2",
+    "@tanstack/router-plugin": "^1.168.46",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
-    "@vitejs/plugin-react": "^6.0.1",
+    "@vitejs/plugin-react": "^6.1.2",
     "dotenv-cli": "catalog:",
-    "shadcn": "^4.7.0",
-    "tailwindcss": "^4.2.4",
+    "shadcn": "^4.21.5",
+    "tailwindcss": "^4.3.3",
     "vite": "catalog:"
   }
 }
