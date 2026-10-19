@@ -21,7 +21,7 @@ afterEach(() => {
 });
 
 async function openMenu(onSelect: () => void, onDisabledSelect: () => void) {
-  await act(async () => {
+  await act(() => {
     root.render(
       createElement(
         Menu.Root,
@@ -44,7 +44,7 @@ async function openMenu(onSelect: () => void, onDisabledSelect: () => void) {
       ),
     );
   });
-  await act(async () => {
+  await act(() => {
     container.querySelector("button")?.dispatchEvent(
       new MouseEvent("contextmenu", {
         button: 2,
@@ -65,10 +65,10 @@ describe("Radix context menu compatibility", () => {
     await openMenu(onSelect, onDisabledSelect);
     const items = document.querySelectorAll<HTMLElement>('[role="menuitem"]');
     expect([...items].map((item) => item.textContent)).toEqual(["Edit", "Delete"]);
-    await act(async () => items[1].click());
+    await act(() => items[1].click());
     expect(onDisabledSelect).not.toHaveBeenCalled();
     expect(document.querySelector('[role="menu"]')).not.toBeNull();
-    await act(async () => items[0].click());
+    await act(() => items[0].click());
     expect(onSelect).toHaveBeenCalledOnce();
     expect(document.querySelector('[role="menu"]')).toBeNull();
   });
@@ -76,7 +76,7 @@ describe("Radix context menu compatibility", () => {
   it("dismisses with Escape without selecting an item", async () => {
     const onSelect = vi.fn();
     await openMenu(onSelect, vi.fn());
-    await act(async () => {
+    await act(() => {
       document
         .querySelector('[role="menu"]')
         ?.dispatchEvent(
