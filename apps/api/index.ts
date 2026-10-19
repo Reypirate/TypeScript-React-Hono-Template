@@ -1,4 +1,4 @@
-﻿import { serveStatic } from "hono/bun";
+import { serveStatic } from "hono/bun";
 
 import { createApp } from "./app";
 import { createAuth } from "./auth";

@@ -6,7 +6,8 @@
       "@repo/db": ["./packages/db/index.ts"],
       "@repo/db/schema": ["./packages/db/schema/index.ts"],
       "@repo/shared": ["./packages/shared/index.ts"],
-      "@repo/api": ["./apps/api/index.ts"]
+      "@repo/api": ["./apps/api/index.ts"],
+      "@repo/api/types": ["./apps/api/app.ts"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],
