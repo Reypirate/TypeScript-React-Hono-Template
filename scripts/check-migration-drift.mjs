@@ -23,10 +23,14 @@ function snapshot() {
 }
 
 const before = snapshot();
-const result = spawnSync(process.execPath, [require.resolve("drizzle-kit/bin.cjs"), "generate"], {
+const drizzleBin = join(dirname(require.resolve("drizzle-kit")), "bin.cjs");
+const result = spawnSync(process.execPath, [drizzleBin, "generate"], {
   cwd: databasePackage,
   stdio: "inherit",
-  env: { ...process.env, DATABASE_URL: "postgres://postgres:password@localhost:5432/migration_check" },
+  env: {
+    ...process.env,
+    DATABASE_URL: "postgres://postgres:password@localhost:5432/migration_check",
+  },
 });
 
 if (result.error) throw result.error;
