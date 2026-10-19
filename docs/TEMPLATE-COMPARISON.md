@@ -16,7 +16,7 @@ than treating the reference README's feature list as verification.
 | Observability   | LogTape and Sentry integration                                                        | Structured request logs with route patterns and request IDs, generic public 500 errors                                 |
 | Configuration   | Validated server/client environment                                                   | Validated environment and an uncached runtime script with an explicit public allowlist                                 |
 | Tests           | Vitest unit/integration, Testcontainers, Playwright app flows and coverage thresholds | Vitest HTTP/configuration tests, isolated PostgreSQL/Bun auth integration, Playwright production smoke tests           |
-| Delivery        | CI quality, security, migrations, integration/E2E and builds                          | CI includes these check categories; no automated release workflow                                                      |
+| Delivery        | CI quality, security, migrations, integration/E2E and builds                          | Separate quality, security (CodeQL/audit/Gitleaks), unit, integration/E2E, build, and Release Please workflows         |
 
 Reference implementations: [authentication](https://github.com/zekkv/tanstack-start-template/blob/faba37baaf2f5549a7922cb8ac8aebd77c068b8a/src/lib/auth.server.ts),
 [uploads](https://github.com/zekkv/tanstack-start-template/blob/faba37baaf2f5549a7922cb8ac8aebd77c068b8a/src/features/uploads/presign.server.ts),

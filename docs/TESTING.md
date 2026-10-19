@@ -3,8 +3,8 @@
 Run commands from the repository root. Use the pinned pnpm version and install with
 `pnpm install --frozen-lockfile`.
 
-Run `pnpm audit --prod` to check the locked production dependency graph against current
-registry advisories. CI runs this check too.
+Run `pnpm audit` to check all locked dependencies against current registry advisories, as CI
+does. Use `pnpm audit --prod` to narrow a local check to production dependencies.
 
 ## Unit and HTTP boundary tests
 
@@ -86,7 +86,11 @@ The initial migration expects empty application tables. An existing database cre
 
 ## CI
 
-GitHub Actions installs the frozen lockfile, scans for secrets, checks formatting/lint/types,
-runs unit tests, checks migrations and drift, runs integration tests against PostgreSQL, builds,
-and tests the production app in Chromium. Browser reports upload on failure. Local results
-do not assert that a remote GitHub Actions run has completed.
+GitHub Actions installs the frozen lockfile and reports separate jobs for secret scanning,
+CodeQL, full dependency audit, formatting/lint/types/migration checks, unit tests, PostgreSQL
+integration, production builds, and Chromium E2E tests. Browser reports upload on failure;
+production bundles upload on a successful build. Security scans also run weekly.
+
+See [CI and dependency updates](CI.md) for required check names, Release Please setup, and
+Dependabot review guidance. Local results do not assert that a remote GitHub Actions run
+has completed.

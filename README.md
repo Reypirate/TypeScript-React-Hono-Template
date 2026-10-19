@@ -117,9 +117,13 @@ source checkout as a release step; the runtime image contains built application 
 
 ## Quality Gates
 
-CI runs dependency install, gitleaks, format check, lint, typecheck, unit tests, migration
-history/drift checks, PostgreSQL auth integration, production build, and Chromium tests. A
+GitHub Actions reports separate checks for CodeQL, dependency audit, Gitleaks, code quality,
+unit tests, PostgreSQL integration, production build, and Chromium E2E tests. Release Please
+maintains a version/changelog PR and creates a GitHub release after it is merged. A
 `lefthook.yml` is included for local pre-commit lint/format hooks.
+
+See [CI and dependency updates](docs/CI.md) for check names, release setup, and how to review
+Dependabot PRs.
 
 See [Testing](docs/TESTING.md) for setup, isolation, and test boundaries, and
 [Template comparison](docs/TEMPLATE-COMPARISON.md) for the reviewed reference and remaining
