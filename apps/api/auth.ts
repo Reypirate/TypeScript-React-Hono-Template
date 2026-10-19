@@ -1,15 +1,20 @@
+import type { SendMailOptions } from "nodemailer";
+import type { createDb } from "@repo/db";
+import type { ServerEnv } from "./env-config";
+
 import * as schema from "@repo/db/schema";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { openAPI } from "better-auth/plugins";
 
-import { db } from "./db";
-import { env } from "./env";
-import { sendMail } from "./mailer";
+export function createAuth(
+  env: ServerEnv,
+  db: ReturnType<typeof createDb>,
+  sendMail: (message: SendMailOptions) => Promise<void>,
+) {
+  const hasMailer = Boolean(env.SMTP_HOST && env.SMTP_PORT && env.SMTP_FROM);
 
-const hasMailer = Boolean(env.SMTP_HOST && env.SMTP_PORT && env.SMTP_FROM);
-
-export const auth = betterAuth({
+  return betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: {
@@ -53,4 +58,15 @@ export const auth = betterAuth({
   ],
   secret: env.BETTER_AUTH_SECRET,
   baseURL: env.BETTER_AUTH_URL ?? `${env.VITE_API_URL}/api/auth`,
-});
+  basePath: "/api/auth",
+  trustedOrigins: [new URL(env.VITE_APP_URL).origin, new URL(env.VITE_API_URL).origin],
+  rateLimit: {
+    enabled: true,
+    window: 60,
+    max: 20,
+    storage: "memory",
+  },
+  });
+}
+
+export type AuthSession = ReturnType<typeof createAuth>["$Infer"]["Session"];

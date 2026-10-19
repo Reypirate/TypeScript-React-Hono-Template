@@ -6,9 +6,34 @@ on:
       - main
   pull_request:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   ci:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DATABASE_URL: postgres://postgres:password@localhost:5432/app_test
+      TEST_DATABASE_URL: postgres://postgres:password@localhost:5432/app_test
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: app_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d app_test"
+          --health-interval 2s
+          --health-timeout 3s
+          --health-retries 30
 
     steps:
       - name: Checkout
@@ -52,6 +77,15 @@ jobs:
 
       - name: Test
         run: pnpm test
+
+      - name: Check migration history
+        run: pnpm db:check
+
+      - name: Check schema drift
+        run: pnpm db:check-drift
+
+      - name: Test database and authentication integration
+        run: pnpm test:integration
 
       - name: Build
         run: pnpm build

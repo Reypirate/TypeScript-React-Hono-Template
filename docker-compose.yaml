@@ -23,6 +23,26 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=app
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d app"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  postgres_test:
+    image: postgres:17-alpine
+    profiles: [test]
+    ports:
+      - 5433:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=app_test
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d app_test"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
   minio:
     image: quay.io/minio/minio
     container_name: minio
@@ -41,6 +61,7 @@ services:
     container_name: minio_init
     depends_on:
       - minio
+    restart: "no"
     environment:
       - MC_USER=admin
       - MC_PASS=password
@@ -50,5 +71,5 @@ services:
         until (mc alias set minio http://minio:9000 $$MC_USER $$MC_PASS 2>/dev/null) do echo '...' && sleep 1; done;
         echo 'Creating bucket $$MC_BUCKET';
         mc mb --ignore-existing minio/$$MC_BUCKET;
-        exit 0;
+        exit $$?;
       "

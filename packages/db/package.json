@@ -5,9 +5,13 @@
   "type": "module",
   "exports": {
     ".": "./index.ts",
+    "./migrations": "./migrations.ts",
     "./schema": "./schema/index.ts"
   },
   "scripts": {
+    "generate": "dotenv -e ../../.env -- drizzle-kit generate",
+    "migrate": "dotenv -e ../../.env -- drizzle-kit migrate",
+    "check": "dotenv -e ../../.env -- drizzle-kit check",
     "push": "dotenv -e ../../.env -- drizzle-kit push",
     "studio": "dotenv -e ../../.env -- drizzle-kit studio",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false -p tsconfig.json",

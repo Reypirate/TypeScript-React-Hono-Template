@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
 
 // --- Auth Tables (Better Auth) ---
 export const user = pgTable("user", {
@@ -28,7 +28,7 @@ export const session = pgTable("session", {
   userId: text("userId")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
-});
+}, (table) => [index("session_user_id_idx").on(table.userId)]);
 
 export const account = pgTable("account", {
   id: text("id").primaryKey(),
@@ -46,7 +46,7 @@ export const account = pgTable("account", {
   password: text("password"),
   createdAt: timestamp("createdAt").notNull(),
   updatedAt: timestamp("updatedAt").notNull(),
-});
+}, (table) => [index("account_user_id_idx").on(table.userId)]);
 
 export const verification = pgTable("verification", {
   id: text("id").primaryKey(),
@@ -55,4 +55,4 @@ export const verification = pgTable("verification", {
   expiresAt: timestamp("expiresAt").notNull(),
   createdAt: timestamp("createdAt").$defaultFn(() => new Date()),
   updatedAt: timestamp("updatedAt").$defaultFn(() => new Date()),
-});
+}, (table) => [index("verification_identifier_idx").on(table.identifier)]);
