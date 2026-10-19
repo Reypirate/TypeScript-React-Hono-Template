@@ -27,6 +27,10 @@ The E2E suite currently tests anonymous production behavior and needs no databas
 The integration workflow owns a PostgreSQL 17 service and creates/drops its own test database.
 If browser tests begin signing users in, provision PostgreSQL and migrations in that workflow.
 
+The migration-history check supplies a placeholder `DATABASE_URL` because Drizzle requires
+connection settings when loading its configuration. History and schema-drift checks work
+offline and do not need a PostgreSQL service or a developer's `.env`.
+
 Code Quality retains a build to check the whole workspace together. Build separately retains
 downloadable production outputs; E2E builds the exact checkout it will serve in Chromium.
 
