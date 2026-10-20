@@ -1,8 +1,11 @@
-FROM oven/bun:1.3.13-alpine AS base
+FROM oven/bun:1.3.13-alpine AS bun
+
+FROM node:22.23.3-alpine AS base
+
+COPY --from=bun /usr/local/bin/bun /usr/local/bin/bun
 
 WORKDIR /app
 
-RUN apk add --no-cache nodejs npm
 RUN npm install -g pnpm@10.33.3
 
 FROM base AS deps

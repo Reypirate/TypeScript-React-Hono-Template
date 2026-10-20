@@ -18,10 +18,14 @@ through `workflow_dispatch`. Security checks also run every Monday at 06:00 UTC.
 | E2E Tests         | E2E tests                      | Production build and Chromium smoke tests; reports/traces upload on failure            |
 | Release Please    | release-please                 | Maintains a release PR and publishes the GitHub release after that PR is merged        |
 
-Application jobs share `.github/actions/setup/action.yml`: Node 22.18.0, Bun 1.3.13, pnpm
+Application jobs share `.github/actions/setup/action.yml`: Node 22.23.3, Bun 1.3.13, pnpm
 from the root `packageManager` field, a pnpm store cache, and a frozen lockfile install.
 Third-party actions use immutable commit SHAs with version comments; Dependabot monitors
 the workflows and the composite action. No application credentials are needed for tests.
+
+jsdom 30 requires Node `^22.22.2 || ^24.15.0 || >=26.0.0`. The package engine range and
+development setup follow those requirements. CI and Docker build stages use Node 22.23.3;
+the production server continues to run on Bun.
 
 The E2E suite currently tests anonymous production behavior and needs no database service.
 The integration workflow owns a PostgreSQL 17 service and creates/drops its own test database.

@@ -24,7 +24,7 @@ workspace orchestration.
 
 Prerequisites:
 
-- Node.js 22.18+
+- Node.js 22.22.2+, 24.15.0+, or 26+ (Node 23 and 25 are unsupported)
 - pnpm 10.33+
 - Bun 1.3+
 - Docker Desktop (running) for PostgreSQL and the local services
