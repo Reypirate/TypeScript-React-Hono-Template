@@ -71,6 +71,11 @@ settings`. Release Please creates a PR with a root package version bump, changel
 manifest update. Review and merge it when ready to tag a GitHub release. It does not publish
 packages to npm or deploy an application.
 
+Release Please owns the root `CHANGELOG.md` layout. Oxfmt excludes that generated file
+through `/CHANGELOG.md` in `.oxfmtrc.json` so a new release's Markdown layout does not fail
+Code Quality. Review release-note content in the release PR; application code and authored
+documentation continue to use the normal formatting checks.
+
 In Settings > Actions > General, allow GitHub Actions to create pull requests. The release
 job requests `contents: write`, `issues: write`, and `pull-requests: write`; validation jobs
 keep read-only repository access.
