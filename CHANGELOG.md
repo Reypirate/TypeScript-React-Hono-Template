@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.3](https://github.com/Reypirate/TypeScript-React-Hono-Template/compare/v0.1.2...v0.1.3) (2026-10-20)
+
+
+### Bug Fixes
+
+* preserve generated release changelog formatting ([b5cae99](https://github.com/Reypirate/TypeScript-React-Hono-Template/commit/b5cae99f195793a41c64b5d2d933049aa7239d54))
+* preserve generated release changelog formatting ([b77e976](https://github.com/Reypirate/TypeScript-React-Hono-Template/commit/b77e9762b94ecb0333e8db29117cb8094998d939))
+
 ## [0.1.2](https://github.com/Reypirate/TypeScript-React-Hono-Template/compare/v0.1.1...v0.1.2) (2026-10-20)
 
 
