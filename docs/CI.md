@@ -1,5 +1,7 @@
 # CI and dependency updates
 
+[Documentation index](README.md)
+
 ## Checks
 
 The workflows run on pushes to `main` and on pull requests. Each check runs independently,
@@ -40,10 +42,10 @@ downloadable production outputs; E2E builds the exact checkout it will serve in 
 
 ## GitHub setup
 
-After these workflows are on `main`, let them run once before configuring required checks.
-Replace any old required `ci` check with the eight validation checks above. Release Please
-only runs on `main` and should not be required on ordinary pull requests. Run every validation
-workflow for documentation-only PRs too, so required checks do not remain pending.
+Let workflows run once before configuring required checks in a new repository. Require the
+eight validation checks above; Release Please only runs on `main` and should not be required
+on ordinary pull requests. Run every validation workflow for documentation-only PRs too,
+so required checks do not remain pending.
 
 Use CodeQL advanced setup for `security-checks.yml`. If CodeQL default setup is already
 enabled, switch to advanced setup to avoid conflicting configurations. Code scanning is
@@ -59,10 +61,10 @@ See [Gitleaks](https://github.com/gitleaks/gitleaks-action) and
 
 ## Releases
 
-The root package is released as one template, initially version `0.1.0`. Private workspace
-packages remain internal. `release-please-config.json` starts collecting changes after commit
-`b5825e7570b584505087a878422b88f185c1db2a`; change or remove `bootstrap-sha` when reusing this
-configuration in a repository without that history.
+The root package is released as one template. Private workspace packages remain internal.
+Version tracking lives in `package.json` and `.release-please-manifest.json`. When reusing
+this setup in a new repository, review `release-please-config.json` and change or remove its
+`bootstrap-sha` so release history starts at a commit that exists in your repository.
 
 Use Conventional Commits, for example `fix: handle expired sessions` or `feat: add profile
 settings`. Release Please creates a PR with a root package version bump, changelog, and
@@ -100,35 +102,3 @@ review ordinary updates for compatibility and regressions.
 Weekly minor/patch development-tool updates are grouped to reduce noise. Major updates stay
 separate. Action minor/patch updates are grouped too; major action upgrades remain individual.
 These groups do not replace review or CI.
-
-### Review snapshot: 2026-10-20
-
-The repository's existing `main` CI run for `b5825e7`
-[passed](https://github.com/Reypirate/TypeScript-React-Hono-Template/actions/runs/39277637728).
-The following results describe existing PRs, before the new workflows have run remotely.
-
-| PR                                                                       | Proposal                       | Findings and next action                                                                                                                                                                                                                 |
-| ------------------------------------------------------------------------ | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [#1](https://github.com/Reypirate/TypeScript-React-Hono-Template/pull/1) | setup-node v4 to v7            | Its old run failed at Gitleaks because the token was absent, not at setup-node. The CI update includes v7.1.0. Close as superseded after this CI change lands and passes.                                                                |
-| [#2](https://github.com/Reypirate/TypeScript-React-Hono-Template/pull/2) | checkout v4 to v7              | Latest CI passed. The CI update includes v7.0.1. Close as superseded after this change lands and passes.                                                                                                                                 |
-| [#3](https://github.com/Reypirate/TypeScript-React-Hono-Template/pull/3) | gitleaks-action v2 to v3       | Latest CI passed. v3 migrates the action runtime to Node 24. This CI update includes v3.0.0; close as superseded after it passes.                                                                                                        |
-| [#4](https://github.com/Reypirate/TypeScript-React-Hono-Template/pull/4) | pnpm/action-setup v4 to v6     | Latest CI passed. The action update does not change this project's pnpm version. This CI update includes v6.1.0; close as superseded after it passes.                                                                                    |
-| [#6](https://github.com/Reypirate/TypeScript-React-Hono-Template/pull/6) | jsdom 26 to 30                 | Conflicts with the lockfile. jsdom 30.1.3 requires Node 22.22.2+, 24.15.0+, or 26+ (excluding Node 23/25), so CI's Node 22.18.0 is unsupported. Hold until the Node baseline is deliberately upgraded and migration/frontend tests pass. |
-| [#7](https://github.com/Reypirate/TypeScript-React-Hono-Template/pull/7) | @types/node 25 to 26           | Conflicts with the current lockfile. CI/build tooling targets Node 22, so Node 26 types can permit APIs absent at runtime. Hold and align types with the supported Node baseline as a separate tested change.                            |
-| [#8](https://github.com/Reypirate/TypeScript-React-Hono-Template/pull/8) | Radix context menu 2.2 to 2.4  | Conflicts with the current lockfile; old CI stopped at Gitleaks. Refresh and run the new checks, then smoke-test context menu interactions before merging.                                                                               |
-| [#9](https://github.com/Reypirate/TypeScript-React-Hono-Template/pull/9) | Hook Form resolvers 5.2 to 5.9 | Conflicts with the current lockfile; old CI stopped at Gitleaks. Current React Hook Form/Zod versions fit the proposed peer ranges. Refresh and verify resolver behavior/types before merging.                                           |
-
-The package-update branches were based on `848feb3`, before the dependency/security fixes in
-`b5825e7`. Refresh rather than copying their old lockfiles over current `main`.
-
-A subsequent Dependabot refresh [failed in the updater](https://github.com/Reypirate/TypeScript-React-Hono-Template/actions/runs/39277871774/job/118146640376)
-with `ERR_PNPM_NO_MATURE_MATCHING_VERSION`: Nodemailer 10.1.7 was only 21 hours old and did
-not satisfy the updater's minimum-release-age constraint. This is different from a failing
-application test. Wait for the release-age window to pass and retry the Dependabot update
-from Insights > Dependency graph > Dependabot. A maintainer can also comment
-`@dependabot rebase` on an affected PR. Do not disable the release-age guard or downgrade a
-security fix just to make the updater green.
-
-If a refresh still fails, inspect its current log and regenerate only the intended dependency
-update from current `main` using the pinned pnpm version, then run the full checks. This review
-does not merge, close, approve, or comment on the existing PRs.

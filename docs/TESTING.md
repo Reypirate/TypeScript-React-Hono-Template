@@ -1,5 +1,7 @@
 # Testing
 
+[Documentation index](README.md)
+
 Run commands from the repository root. Use the pinned pnpm version and install with
 `pnpm install --frozen-lockfile`.
 
@@ -19,10 +21,12 @@ protected routes, error responses, runtime configuration, and API/frontend route
 Request-log tests check that auth path/query tokens are not included in access logs.
 Environment tests check boolean parsing, port validation, and required secrets even in CI.
 Frontend unit tests use jsdom through `apps/web/vitest.config.ts`; backend tests use Node.
+Frontend coverage includes local storage, Zod/React Hook Form resolver behavior, and Radix
+context menu interactions with pointer and keyboard input.
 
 ## Database and authentication integration
 
-Docker Desktop must be running.
+A Docker engine must be running for the supplied PostgreSQL test service.
 
 ```bash
 pnpm services:test
@@ -78,8 +82,11 @@ pnpm db:check-drift
 
 `db:check` validates migration history. `db:check-drift` runs generation without connecting
 to a database and fails when the migration directory changes, including new untracked files.
-When it fails, review and commit the generated SQL and metadata. `db:generate` and `db:migrate`
-use the configured `.env`; inspect generated SQL before applying it.
+When it fails, review and commit the generated SQL and metadata. `db:check` still needs a
+`DATABASE_URL` to load Drizzle's configuration; a configured `.env` supplies it locally.
+The drift script supplies its own placeholder URL. `db:generate` and `db:migrate` use the
+configured `.env`; inspect generated SQL before applying it. See
+[database changes](CONTRIBUTING.md#database-changes) for the full workflow.
 
 The initial migration expects empty application tables. An existing database created with
 `db:push` needs a reviewed baseline before adopting migration history.
@@ -92,5 +99,4 @@ integration, production builds, and Chromium E2E tests. Browser reports upload o
 production bundles upload on a successful build. Security scans also run weekly.
 
 See [CI and dependency updates](CI.md) for required check names, Release Please setup, and
-Dependabot review guidance. Local results do not assert that a remote GitHub Actions run
-has completed.
+Dependabot review guidance.
