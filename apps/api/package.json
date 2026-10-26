@@ -20,7 +20,7 @@
     "@t3-oss/env-core": "^0.13.11",
     "better-auth": "catalog:",
     "hono": "catalog:",
-    "nodemailer": "^10.1.7",
+    "nodemailer": "^10.2.1",
     "zod": "catalog:"
   },
   "devDependencies": {
